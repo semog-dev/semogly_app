@@ -1,10 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:semogly_app/app/models/account_model.dart';
 import 'package:semogly_app/core/repositories/account_repository.dart';
 import 'package:semogly_app/core/services/api_service.dart';
 
 class AccountRepository extends ChangeNotifier implements IAccountRepository {
   final ApiService _apiService;
+
+  Account? _currentAccount;
+  Account? get currentAccount => _currentAccount;
 
   bool _isUserLoggedIn = false;
 
@@ -47,8 +51,9 @@ class AccountRepository extends ChangeNotifier implements IAccountRepository {
   @override
   Future<bool> isAuthenticated() async {
     try {
-      await _apiService.dio.get('/account/me');
+      final response = await _apiService.dio.get('/account/me');
       _isUserLoggedIn = true;
+      _currentAccount = Account.fromJson(response.data);
     } catch (e) {
       _isUserLoggedIn = false;
     }

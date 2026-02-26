@@ -9,8 +9,8 @@ void main() async {
   final apiService = ApiService();
   await apiService.init();
   final accountRepository = AccountRepository(apiService);
-  await accountRepository.isAuthenticated();
   apiService.addAuthInterceptor(accountRepository);
+  await accountRepository.isAuthenticated();
   final appRouter = AppRouter(accountRepository);
   runApp(MyApp(appRouter: appRouter));
 }

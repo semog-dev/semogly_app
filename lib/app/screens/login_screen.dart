@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text,
         _passwordController.text,
       );
+      await widget.accountRepository.isAuthenticated();
     } catch (e) {
       ScaffoldMessenger.of(
         context,
