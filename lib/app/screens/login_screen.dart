@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:semogly_app/app/repositories/account_repository_impl.dart';
+import 'package:semogly_app/core/inject/service_locator.dart';
 import 'package:semogly_app/core/repositories/account_repository.dart';
 import 'package:semogly_app/core/theme/app_styles.dart';
 import 'package:semogly_app/core/widgets/app_text_field.dart';
 import 'package:semogly_app/core/widgets/primary_button.dart';
 
 class LoginScreen extends StatefulWidget {
-  final IAccountRepository accountRepository;
-
-  const LoginScreen({super.key, required this.accountRepository});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -16,16 +16,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final accountRepository = getIt<IAccountRepository>() as AccountRepository;
   bool _isLoading = false;
 
   void _handleLogin() async {
     setState(() => _isLoading = true);
     try {
-      await widget.accountRepository.login(
+      await accountRepository.login(
         _emailController.text,
         _passwordController.text,
       );
-      await widget.accountRepository.isAuthenticated();
+      await accountRepository.isAuthenticated();
     } catch (e) {
       ScaffoldMessenger.of(
         context,

@@ -25,16 +25,8 @@ class AppRouter {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) =>
-            HomeScreen(accountRepository: accountRepository),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) =>
-            LoginScreen(accountRepository: accountRepository),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     ],
   );
 }

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:semogly_app/app/repositories/account_repository_impl.dart';
+import 'package:semogly_app/core/inject/service_locator.dart';
 import 'package:semogly_app/core/repositories/account_repository.dart';
 import 'package:semogly_app/core/theme/app_styles.dart';
 import 'package:semogly_app/core/widgets/action_card.dart';
 import 'package:semogly_app/core/widgets/app_header.dart';
 
 class HomeScreen extends StatelessWidget {
-  final IAccountRepository accountRepository;
-
-  const HomeScreen({super.key, required this.accountRepository});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final repo = accountRepository as AccountRepository;
+    final accountRepository = getIt<IAccountRepository>() as AccountRepository;
 
     return ListenableBuilder(
-      listenable: repo,
+      listenable: accountRepository,
       builder: (context, child) {
-        final String userName = repo.currentAccount?.name ?? "Carregando...";
+        final String userName =
+            accountRepository.currentAccount?.name ?? "Carregando...";
 
         return Scaffold(
           backgroundColor: const Color(0xFF0F172A),
@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            actions: [_buildLogoutButton()],
+            actions: [_buildLogoutButton(accountRepository)],
           ),
           body: SingleChildScrollView(
             padding: AppStyles.screenPadding,
@@ -95,7 +95,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLogoutButton() {
+  Widget _buildLogoutButton(IAccountRepository accountRepository) {
     return Container(
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(

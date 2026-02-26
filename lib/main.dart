@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:semogly_app/app/repositories/account_repository_impl.dart';
 import 'package:semogly_app/app/routes/app_router.dart';
-import 'package:semogly_app/core/services/api_service.dart';
+import 'package:semogly_app/core/inject/service_locator.dart';
+import 'package:semogly_app/core/repositories/account_repository.dart';
 import 'package:semogly_app/core/theme/app_styles.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final apiService = ApiService();
-  await apiService.init();
-  final accountRepository = AccountRepository(apiService);
-  apiService.addAuthInterceptor(accountRepository);
-  await accountRepository.isAuthenticated();
-  final appRouter = AppRouter(accountRepository);
+  await setupServiceLocator();
+  final appRouter = AppRouter(getIt<IAccountRepository>());
   runApp(MyApp(appRouter: appRouter));
 }
 
