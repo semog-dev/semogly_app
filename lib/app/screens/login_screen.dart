@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:semogly_app/app/repositories/account_repository_impl.dart';
 import 'package:semogly_app/core/inject/service_locator.dart';
 import 'package:semogly_app/core/repositories/account_repository.dart';
 import 'package:semogly_app/core/theme/app_styles.dart';
 import 'package:semogly_app/core/widgets/app_text_field.dart';
 import 'package:semogly_app/core/widgets/primary_button.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,24 +16,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final accountRepository = getIt<IAccountRepository>() as AccountRepository;
-  bool _isLoading = false;
+
+  final accountRepository = getIt<IAccountRepository>();
 
   void _handleLogin() async {
-    setState(() => _isLoading = true);
     try {
       await accountRepository.login(
         _emailController.text,
         _passwordController.text,
       );
       await accountRepository.isAuthenticated();
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro: ${e.toString()}')));
-    } finally {
-      setState(() => _isLoading = false);
-    }
+    } catch (_) {}
   }
 
   @override
@@ -81,10 +74,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   isPassword: true,
                 ),
                 const SizedBox(height: 32),
-                PrimaryButton(
-                  text: "Entrar",
-                  isLoading: _isLoading,
-                  onPressed: _handleLogin,
+                PrimaryButton(text: "Entrar", onPressed: _handleLogin),
+
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Não tem uma conta? ",
+                      style: TextStyle(color: Colors.blueGrey),
+                    ),
+                    GestureDetector(
+                      onTap: () => context.push('/register'),
+                      child: const Text(
+                        "Cadastre-se",
+                        style: TextStyle(
+                          color: Color(0xFF6366F1),
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
